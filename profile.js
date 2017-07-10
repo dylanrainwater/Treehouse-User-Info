@@ -1,4 +1,5 @@
-const https = require('https');
+const https = require("https");
+const http = require("http");
 
 function printMessage(username, badgeCount, points) {
     const percentage = (points.JavaScript * 100 / points.total).toFixed(2);
@@ -8,18 +9,32 @@ function printMessage(username, badgeCount, points) {
 
 // Retrieve and print stats for a username at treehouse
 function get(username) {
-    // Connect to the API URL (https://teamtreehouse.com/<user>.json)
-    https.get(`https://teamtreehouse.com/${username}.json`, (response) => {
-        let body = "";
-        response.on('data', data => {
-            body += data.toString();
-        });
+    try {
+        // Connect to the API URL (https://teamtreehouse.com/<user>.json)
+        const request = https.get(`https://teamtreehouse.com/${username}.json`, (response) => {
+            if (response.statusCode === 200) {
+                let body = "";
+                response.on("data", (data) => {
+                    body += data.toString();
+                });
 
-        response.on('end', () => {
-            const profile = JSON.parse(body);
-            printMessage(username, profile.badges.length, profile.points);
+                response.on("end", () => {
+                    try {
+                        const profile = JSON.parse(body);
+                        printMessage(username, profile.badges.length, profile.points);
+                    } catch (e) {
+                        console.error(e.message);
+                    }
+                });
+            } else {
+                const message = `There was an error getting the profile for ${username}: ${ http.STATUS_CODES[response.statusCode]}`;
+                console.error(message);
+            }
         });
-    }).on('error', e => console.error(e.message));
+        request.on("error", (e) => console.error(`Request error: ${e.message}`));
+    } catch (e) {
+        console.error(e.message);
+    }
 }
 
-exports.get = get
+exports.get = get;
