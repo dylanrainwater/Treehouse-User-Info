@@ -7,7 +7,7 @@ function printMessage(username, badgeCount, points) {
 }
 
 // Retrieve and print stats for a username at treehouse
-function getProfile(username) {
+function get(username) {
     // Connect to the API URL (https://teamtreehouse.com/<user>.json)
     https.get(`https://teamtreehouse.com/${username}.json`, (response) => {
         let body = "";
@@ -19,8 +19,7 @@ function getProfile(username) {
             const profile = JSON.parse(body);
             printMessage(username, profile.badges.length, profile.points);
         });
-    }).on('error', e => console.error(e));
+    }).on('error', e => console.error(e.message));
 }
 
-const users = process.argv.slice(2);
-users.forEach(getProfile);
+exports.get = get
