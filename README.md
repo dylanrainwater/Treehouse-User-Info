@@ -1,7 +1,7 @@
 # Treehouse User Info
 
 A simple utility written in Node.js to fetch stats about a user on teamtreehouse.com.
-Utilizes json files located at teamtreehouse.com/<username>.json
+Utilizes json files located at teamtreehouse.com/username.json
 
 Part of course for Node.js on TeamTreehouse.com
 
