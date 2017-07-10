@@ -4,14 +4,15 @@ const https = require('https');
 
 // Function to print message to console
 function printMessage(username, badgeCount, points) {
-    const message = `${username} has ${badgeCount} total badge(s) and ${points} points in JavaScript`;
+    const percentage = (points.JavaScript * 100 / points.total).toFixed(2);
+    const message = `${username} has ${badgeCount} total badge(s) and ${points.JavaScript} points in JavaScript (${percentage}% of total points).`;
     console.log(message);
 }
 
 // Retrive and print stats for a username at treehouse
 function getProfile(username) {
     // Connect to the API URL (https://teamtreehouse.com/<user>.json)
-    const response = https.get(`https://wteamtreehouse.com/${username}.json`, (response) => {
+    https.get(`https://teamtreehouse.com/${username}.json`, (response) => {
         let body = "";
         response.on('data', data => {
             // Read data
@@ -22,10 +23,9 @@ function getProfile(username) {
             // Parse data
             const profile = JSON.parse(body);
             // Print data
-            printMessage(username, profile.badges.length, profile.points.JavaScript);
+            printMessage(username, profile.badges.length, profile.points);
         });
-    });
-    reponse.on('error', e => console.error(e));
+    }).on('error', e => console.error(e));
 }
 
 const users = process.argv.slice(2);
